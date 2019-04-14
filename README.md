@@ -22,6 +22,7 @@ $ catkin build yolov3_pytorch_ros
 ```
 wget http://pjreddie.com/media/files/yolov3.weights
 ```
+For the **training process** in order to use custom objects, please refer to the original [YOLO page](https://pjreddie.com/darknet/yolo/).
 
 2. Modify the parameters in the [launch file](launch/detector.launch) and launch it. You will need to change the `image_topic` parameter to match your camera, and the `weights_name`, `config_name` and `classes_name` parameters depending on what you are trying to do.
 
