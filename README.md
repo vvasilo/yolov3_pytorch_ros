@@ -83,7 +83,7 @@ If you are using this package, please add the following citation to your publica
 
     @misc{vasilopoulos_pavlakos_yolov3ros_2019,
       author = {Vasileios Vasilopoulos and Georgios Pavlakos},
-      title = {{yolov3_pytorch_ros}: Object Detection for {ROS} using PyTorch},
+      title = {{yolov3_pytorch_ros}: Object Detection for {ROS} using {PyTorch}},
       howpublished = {\url{https://github.com/vvasilo/yolov3_pytorch_ros}},
       year = {2019},
     }
