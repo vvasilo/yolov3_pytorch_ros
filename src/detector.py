@@ -54,7 +54,7 @@ class DetectorManager():
         # Load other parameters
         config_name = rospy.get_param('~config_name', 'yolov3.cfg')
         self.config_path = os.path.join(package_path, 'config', config_name)
-        classes_name = rospy.get_param('~classes_names', 'coco.names')
+        classes_name = rospy.get_param('~classes_name', 'coco.names')
         self.classes_path = os.path.join(package_path, 'classes', classes_name)
         self.gpu_id = rospy.get_param('~gpu_id', 0)
         self.network_img_size = rospy.get_param('~img_size', 416)
