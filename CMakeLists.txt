@@ -8,6 +8,8 @@ find_package(catkin REQUIRED
     std_msgs
     message_generation)
 
+catkin_python_setup()
+
 add_message_files(
   FILES
     BoundingBox.msg
@@ -23,4 +25,15 @@ generate_messages(
 
 catkin_package()
 
-include_directories()
+catkin_install_python(
+  PROGRAMS src/${PROJECT_NAME}/detector.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY models
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
