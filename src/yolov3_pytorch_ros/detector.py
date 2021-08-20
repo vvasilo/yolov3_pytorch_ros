@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import division
 
@@ -27,10 +27,9 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torch.autograd import Variable
 
-from yolov3_pytorch_ros.models.dr_net import DispResNet
-from yolov3_pytorch_ros import utils
+from models.models import Darknet
+from utils.utils import *
 from yolov3_pytorch_ros.msg import BoundingBoxes, BoundingBox
-sys.modules['utils'] = utils
 
 # Detector manager class for YOLO
 class DetectorManager():
