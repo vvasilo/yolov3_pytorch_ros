@@ -11,6 +11,12 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
+  <exec_depend>python3-skimage</exec_depend>
+  <exec_depend>python-pytorch-pip</exec_depend>
+
   <exec_depend>rospy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>

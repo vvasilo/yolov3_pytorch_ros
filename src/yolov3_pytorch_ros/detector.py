@@ -64,14 +64,17 @@ class DetectorManager():
         # Initialize width and height
         self.h = 0
         self.w = 0
-        
-        # Load net
-        self.model = Darknet(self.config_path, img_size=self.network_img_size)
-        self.model.load_weights(self.weights_path)
+
         if torch.cuda.is_available():
+            # Load net
+            self.model = Darknet(self.config_path, img_size=self.network_img_size)
+            self.model.load_weights(self.weights_path)
             self.model.cuda()
         else:
-            raise IOError('CUDA not found.')
+            # if CUDA not available, use CPU
+            self.model = torch.load(self.weights_path, map_location='cpu') #['model']
+            #self.checkpoint = {key.replace('module.', ''): value for key, value in self.checkpoint.items()}
+            #self.model.load_state_dict(self.checkpoint)
         self.model.eval() # Set in evaluation mode
         rospy.loginfo("Deep neural network loaded")
 
