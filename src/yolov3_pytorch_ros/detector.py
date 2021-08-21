@@ -96,9 +96,6 @@ class DetectorManager():
         self.pub_viz_ = rospy.Publisher(self.published_image_topic, Image, queue_size=10)
         rospy.loginfo("Launched node for object detection")
 
-        # Spin
-        rospy.spin()
-
     def imageCb(self, data):
         # Convert the image to OpenCV
         try:
@@ -235,3 +232,6 @@ if __name__=="__main__":
 
     # Define detector object
     dm = DetectorManager()
+
+    # Spin
+    rospy.spin()
