@@ -162,7 +162,7 @@ class DetectorManager():
 
     def imagePreProcessing(self, img):
         # Extract image and shape
-        img = np.copy(img)
+        img = np.ascontiguousarray(img)
         img = img.astype(float)
         height, width, channels = img.shape
         
