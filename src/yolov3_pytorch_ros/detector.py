@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import division
 
@@ -7,6 +7,7 @@ import numpy as np
 import scipy.io as sio
 import os, sys, cv2, time
 from skimage.transform import resize
+from torch.cuda import is_available
 
 # ROS imports
 import rospy
@@ -27,8 +28,9 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torch.autograd import Variable
 
-from models import *
+from models.models import Darknet
 from utils.utils import *
+from yolov3_pytorch_ros.msg import BoundingBoxes, BoundingBox
 
 # Detector manager class for YOLO
 class DetectorManager():
@@ -63,14 +65,19 @@ class DetectorManager():
         # Initialize width and height
         self.h = 0
         self.w = 0
-        
-        # Load net
+
+        rospy.loginfo("config path: " + self.config_path)
         self.model = Darknet(self.config_path, img_size=self.network_img_size)
+        # Load net
         self.model.load_weights(self.weights_path)
         if torch.cuda.is_available():
+            rospy.loginfo("CUDA available, use GPU")
             self.model.cuda()
         else:
-            raise IOError('CUDA not found.')
+            rospy.loginfo("CUDA not available, use CPU")
+            # if CUDA not available, use CPU
+            # self.checkpoint = torch.load(self.weights_path, map_location=torch.device('cpu'))
+            # self.model.load_state_dict(self.checkpoint)
         self.model.eval() # Set in evaluation mode
         rospy.loginfo("Deep neural network loaded")
 
@@ -89,9 +96,6 @@ class DetectorManager():
         self.pub_viz_ = rospy.Publisher(self.published_image_topic, Image, queue_size=10)
         rospy.loginfo("Launched node for object detection")
 
-        # Spin
-        rospy.spin()
-
     def imageCb(self, data):
         # Convert the image to OpenCV
         try:
@@ -106,8 +110,13 @@ class DetectorManager():
 
         # Configure input
         input_img = self.imagePreProcessing(self.cv_image)
-        input_img = Variable(input_img.type(torch.cuda.FloatTensor))
-        
+
+        # set image type
+        if(torch.cuda.is_available()):
+          input_img = Variable(input_img.type(torch.cuda.FloatTensor))
+        else:
+          input_img = Variable(input_img.type(torch.FloatTensor))
+
         # Get detections from network
         with torch.no_grad():
             detections = self.model(input_img)
@@ -139,18 +148,18 @@ class DetectorManager():
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
 
-        # Publish detection results
-        self.pub_.publish(detection_results)
+            # Publish detection results
+            self.pub_.publish(detection_results)
 
-        # Visualize detection results
-        if (self.publish_image):
-            self.visualizeAndPublish(detection_results, self.cv_image)
+            # Visualize detection results
+            if (self.publish_image):
+                self.visualizeAndPublish(detection_results, self.cv_image)
         return True
     
 
     def imagePreProcessing(self, img):
         # Extract image and shape
-        img = np.copy(img)
+        img = np.ascontiguousarray(img)
         img = img.astype(float)
         height, width, channels = img.shape
         
@@ -182,10 +191,11 @@ class DetectorManager():
 
     def visualizeAndPublish(self, output, imgIn):
         # Copy image and visualize
-        imgOut = imgIn.copy()
+        imgOut = np.ascontiguousarray(imgIn)
+
         font = cv2.FONT_HERSHEY_SIMPLEX
-        fontScale = 0.8
-        thickness = 2
+        fontScale = 0.6
+        thickness = int(2)
         for index in range(len(output.bounding_boxes)):
             label = output.bounding_boxes[index].Class
             x_p1 = output.bounding_boxes[index].xmin
@@ -203,7 +213,11 @@ class DetectorManager():
                 self.classes_colors[label] = color
             
             # Create rectangle
-            cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0],color[1],color[2]),thickness)
+            start_point = (int(x_p1), int(y_p1))
+            end_point = (int(x_p3), int(y_p3))
+            lineColor = (int(color[0]), int(color[1]), int(color[2]))
+
+            cv2.rectangle(imgOut, start_point, end_point, lineColor, thickness)
             text = ('{:s}: {:.3f}').format(label,confidence)
             cv2.putText(imgOut, text, (int(x_p1), int(y_p1+20)), font, fontScale, (255,255,255), thickness ,cv2.LINE_AA)
 
@@ -218,3 +232,6 @@ if __name__=="__main__":
 
     # Define detector object
     dm = DetectorManager()
+
+    # Spin
+    rospy.spin()

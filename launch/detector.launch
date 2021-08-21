@@ -15,7 +15,7 @@
     <arg name="confidence"                  default="0.7"/>
 
     <!-- Node -->
-    <node name="detector_manager" pkg="yolov3_pytorch_ros" type="detector.py" output="screen" respawn="true">
+    <node name="detector_manager" pkg="yolov3_pytorch_ros" type="detector.py" output="screen">
         <param name="image_topic"               value="$(arg image_topic)"/>
         <param name="weights_name"              value="$(arg weights_name)"/>
         <param name="config_name"               value="$(arg config_name)"/>
