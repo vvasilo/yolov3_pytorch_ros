@@ -50,6 +50,10 @@ install(DIRECTORY models
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
+install(DIRECTORY classes
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/models/yolov3.weights)
   message("YOLOv3 weights already downloaded!")
 else()
