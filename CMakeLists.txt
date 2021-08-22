@@ -54,19 +54,20 @@ install(DIRECTORY classes
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/models/yolov3.weights)
-  message("YOLOv3 weights already downloaded!")
-else()
-  message("YOLOv3 weights are missing, downloading now...")
-  # install model weights from script
-  add_custom_command(OUTPUT yolov3.weights
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/models/download_weights.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models
-  )
+# add something that depends on above script so it runs
+add_custom_target(
+  DownloadWeights ALL)
 
-  # add something that depends on above script so it runs
-  #  add_custom_target(
-  #    DownloadWeights ALL
-  #    DEPENDS yolov3.weights
-  #  )
-endif()
+# download yolov3 weights
+add_custom_command(TARGET DownloadWeights
+  PRE_BUILD
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/models/download_yolov3_weights.sh
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models
+  COMMENT "YOLOv3 weights")
+
+# download yolov3-tiny weights
+add_custom_command(TARGET DownloadWeights
+  PRE_BUILD
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/models/download_yolov3-tiny_weights.sh
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models
+  COMMENT "YOL0v3 tiny weights")
