@@ -61,13 +61,13 @@ add_custom_target(
 # download yolov3 weights
 add_custom_command(TARGET DownloadWeights
   PRE_BUILD
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/models/download_yolov3_weights.sh
+  COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/models/download_yolov3_weights.sh
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models
   COMMENT "YOLOv3 weights")
 
 # download yolov3-tiny weights
 add_custom_command(TARGET DownloadWeights
   PRE_BUILD
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/models/download_yolov3-tiny_weights.sh
+  COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/models/download_yolov3-tiny_weights.sh
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models
   COMMENT "YOL0v3 tiny weights")
