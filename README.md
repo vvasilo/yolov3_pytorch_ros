@@ -8,17 +8,25 @@ This package provides a ROS wrapper for [YOLOv3](https://pjreddie.com/darknet/yo
 
 ## Prerequisites
 
-To download the prerequisites for this package (except for ROS itself), navigate to the package folder and run:
+To download the prerequisites for this package (except for ROS itself), use the [ROS-default `rosdep` to install the required dependencies](http://wiki.ros.org/ROS/Tutorials/rosdep):
+
+```
+cd /your/catkin_ws
+rosdep install --from-paths src --ignore-src -y
+```
+
+Alternatively you can use the python standard `requirements.txt` file to install the dependencies as well. Navigate to the package folder and run:
 
 ```
 $ sudo pip install -r requirements.txt
 ```
 
 ## Installation
-Navigate to your catkin workspace and run:
+
+Aftre making sure the required dependencies are installed following the instructions above, navigate to your catkin workspace and run:
 
 ```
-$ catkin build yolov3_pytorch_ros
+$ catkin_make --pkg yolov3_pytorch_ros
 ```
 
 ## Basic Usage
