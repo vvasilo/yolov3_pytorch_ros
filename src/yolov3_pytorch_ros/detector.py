@@ -154,6 +154,8 @@ class DetectorManager():
             # Visualize detection results
             if (self.publish_image):
                 self.visualizeAndPublish(detection_results, self.cv_image)
+        else:
+            rospy.loginfo("No detections available, next image")
         return True
     
 
