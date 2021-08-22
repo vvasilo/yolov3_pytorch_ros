@@ -1,0 +1,42 @@
+name: ROS 1 CI
+
+# NOTE: the below script assumes that this is a single-ROS package repo
+#   so the repo name corresponds to the ROS package name
+
+on:
+  pull_request:
+    branches:
+      - 'master'
+jobs:
+  test_environment-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ros_distribution:
+          - melodic
+          - noetic
+        include:
+            # Melodic Morenia (May 2018 - May 2023)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-bionic-ros-melodic-ros-base-latest
+            ros_distribution: melodic
+            ros_version: 1
+            # Noetic Ninjemys (May 2020 - May 2025)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-focal-ros-noetic-ros-base-latest
+            ros_distribution: noetic
+            ros_version: 1
+    container:
+      image: ${{ matrix.docker_image }}
+    steps:
+      - name: setup directories
+        run: mkdir -p ros_ws/src/${{ github.event.repository.name }} 
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: ros_ws/src/${{ github.event.repository.name }} 
+      - name: build and test
+        uses: ros-tooling/action-ros-ci@master
+        with:
+         package-name: ${{ github.event.repository.name }} 
+         target-ros1-distro: ${{ matrix.ros_distribution }}
+         vcs-repo-file-url: ""
